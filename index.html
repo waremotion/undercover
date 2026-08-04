@@ -11,8 +11,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Undercover">
 <meta name="description" content="Jeu Undercover mobile pour soirées entre amis. Fonctionne hors ligne après la première ouverture.">
-<link rel="manifest" href="manifest.webmanifest">
 <title>Undercover Party</title>
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -53,9 +53,48 @@
       <div style="height:12px"></div><div class="notice" id="balanceNotice"></div>
       <div style="height:12px"></div><button type="button" class="btn ghost small" id="resetWordsBtn">Réinitialiser l’historique des mots</button>
     </div>
-    <div class="card"><h2>Prénoms</h2><p>Ils restent enregistrés uniquement sur ce téléphone.</p><div class="names" id="namesList"></div></div>
-    <div class="actions"><button type="button" class="btn ghost" id="backHomeBtn">Retour</button><button type="button" class="btn green" id="startGameBtn">Distribuer les rôles</button></div>
+    <div class="card seatingCard">
+      <div class="seatingIcon">🔄</div>
+      <h2>Ordre autour de la table</h2>
+      <p>Le téléphone va faire le tour de la table. Chaque personne saisit son propre prénom puis le passe à son voisin, toujours dans le même sens.</p>
+      <div class="savedOrderBox hidden" id="savedOrderBox">
+        <div class="eyebrow">Ordre mémorisé sur ce téléphone</div>
+        <div class="orderPreview" id="savedOrderPreview"></div>
+        <button type="button" class="btn secondary" id="useSavedOrderBtn">Rejouer avec cet ordre</button>
+      </div>
+    </div>
+    <div class="actions"><button type="button" class="btn ghost" id="backHomeBtn">Retour</button><button type="button" class="btn green" id="startNameEntryBtn">Faire le tour des prénoms</button></div>
     <div class="startError hidden" id="startError" role="alert" aria-live="assertive"></div>
+  </section>
+
+  <section id="nameEntryScreen" class="hidden">
+    <div class="card center nameEntryCard">
+      <div class="seatingIcon">👤</div>
+      <div class="eyebrow" id="nameEntryProgressText">Personne 1 sur 13</div>
+      <div class="playerName" id="nameEntryTitle">Quel est ton prénom ?</div>
+      <p id="nameEntryInstruction">Tu es la première personne de la ronde. Entre ton prénom.</p>
+      <div class="progress"><div id="nameEntryProgress"></div></div>
+      <input id="singleNameInput" class="nameEntryInput" maxlength="24" autocomplete="given-name" autocapitalize="words" enterkeyhint="next" placeholder="Ton prénom">
+      <div class="fieldError hidden" id="nameEntryError" role="alert">Entre un prénom avant de continuer.</div>
+      <div style="height:13px"></div>
+      <button type="button" class="btn green" id="saveNameAndPassBtn">Valider et passer à mon voisin</button>
+      <div style="height:11px"></div>
+      <button type="button" class="btn ghost" id="cancelNameEntryBtn">Annuler la saisie</button>
+    </div>
+  </section>
+
+  <section id="orderReviewScreen" class="hidden">
+    <div class="card center">
+      <div class="seatingIcon">✅</div>
+      <div class="eyebrow">Tour de table enregistré</div>
+      <div class="playerName">Ordre des joueurs</div>
+      <p>La distribution suivra exactement cet ordre. Après avoir vu son mot, chacun passera donc naturellement le téléphone à son voisin.</p>
+      <div class="orderList" id="orderReviewList"></div>
+      <div style="height:14px"></div>
+      <button type="button" class="btn green" id="confirmOrderBtn">Distribuer les rôles</button>
+      <div style="height:11px"></div>
+      <button type="button" class="btn ghost" id="restartNameEntryBtn">Recommencer le tour des prénoms</button>
+    </div>
   </section>
 
   <section id="passScreen" class="hidden"><div class="card center"><div class="passIcon">📱</div><div class="eyebrow">Passe le téléphone à</div><div class="playerName" id="passPlayerName"></div><p class="bigHint">Personne d’autre ne doit voir l’écran.</p><div class="progress"><div id="revealProgress"></div></div><button type="button" class="btn" id="revealBtn">Voir mon information</button></div></section>
@@ -111,7 +150,7 @@
 
   <section id="endScreen" class="hidden"><div class="card center"><div class="winnerCrown">🏆</div><div class="eyebrow">Partie terminée</div><div class="winnerTitle" id="winnerTitle"></div><p id="winnerText"></p><div class="wordReveal" id="finalWords"></div></div><div class="actions"><button type="button" class="btn green" id="samePlayersBtn">Rejouer avec le même groupe</button><button type="button" class="btn ghost" id="resetBtn">Modifier la configuration</button></div></section>
 
-  <div class="footer">Version 6 · <span id="platformLabel">Web</span> · Jeu local et hors ligne · aucun nom n’est transmis</div>
+  <div class="footer">Version 7 · <span id="platformLabel">Web</span> · Jeu local et hors ligne · aucun nom n’est transmis</div>
 </div>
 <script src="words.js"></script>
 <script src="app.js"></script>
