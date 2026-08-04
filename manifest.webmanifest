@@ -1,0 +1,11 @@
+{
+  "name": "Undercover Party",
+  "short_name": "Undercover",
+  "description": "Jeu Undercover mobile pour soirées entre amis.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#17122d",
+  "theme_color": "#17122d",
+  "lang": "fr"
+}
