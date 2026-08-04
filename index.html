@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#17122d">
+<meta name="color-scheme" content="dark">
+<meta name="format-detection" content="telephone=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Undercover">
+<meta name="description" content="Jeu Undercover mobile pour soirées entre amis. Fonctionne hors ligne après la première ouverture.">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Undercover Party</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="brick-field" aria-hidden="true"><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i></div>
+<div class="app">
+  <header class="topbar"><div class="logo"><div class="logoMark">🕵️</div>UNDER<span>COVER</span></div><div class="topPill">556 duos</div></header>
+
+  <section id="homeScreen">
+    <div class="card hero">
+      <div class="roleBricks"><span class="roleBrick civilBrick">CIVILS</span><span class="roleBrick underBrick">UNDERCOVER</span><span class="roleBrick whiteBrick">MR WHITE</span></div>
+      <h1>Un mot.<br><em>Des suspects.</em></h1>
+      <p>Faites circuler un seul téléphone, donnez des indices et démasquez ceux qui n’ont pas exactement le même mot.</p>
+      <button type="button" class="btn" id="newGameBtn">Lancer une partie</button>
+    </div>
+    <div class="card">
+      <h2>Comment jouer</h2>
+      <div class="rulesGrid">
+        <div class="rule"><div class="ruleNum">1</div><p>Chacun regarde secrètement son mot. Les Civils ont le même mot, les Undercover un mot proche, Mr White aucun mot.</p></div>
+        <div class="rule"><div class="ruleNum">2</div><p>À tour de rôle, donnez un indice court sans prononcer votre mot.</p></div>
+        <div class="rule"><div class="ruleNum">3</div><p>Discutez puis éliminez un suspect. Seul son rôle est révélé ; les mots restent secrets.</p></div>
+        <div class="rule"><div class="ruleNum">4</div><p>Les Civils chassent les intrus. Les Undercover doivent survivre. Mr White peut gagner en devinant le mot des Civils.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="setupScreen" class="hidden">
+    <div class="card">
+      <h2>Préparer la table</h2>
+      <div class="grid two">
+        <div><label>Nombre de joueurs</label><div class="counter"><button type="button" class="btn secondary" data-counter="players" data-dir="-1">−</button><div class="counterValue" id="playersValue">13</div><button type="button" class="btn secondary" data-counter="players" data-dir="1">+</button></div></div>
+        <div><label>Thème des mots</label><select id="categorySelect"><option value="all">Mélange complet</option><option value="food">Cuisine</option><option value="objects">Objets</option><option value="places">Lieux & voyages</option><option value="nature">Animaux & nature</option><option value="culture">Culture & loisirs</option><option value="daily">Vie quotidienne</option></select><div class="miniInfo" id="poolStatus"></div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="roleCounters">
+        <div class="roleBox under"><label>Undercover</label><div class="counter"><button type="button" class="btn secondary" data-counter="under" data-dir="-1">−</button><div class="counterValue" id="underValue">2</div><button type="button" class="btn secondary" data-counter="under" data-dir="1">+</button></div></div>
+        <div class="roleBox white"><label>Mr White</label><div class="counter"><button type="button" class="btn secondary" data-counter="white" data-dir="-1">−</button><div class="counterValue" id="whiteValue">1</div><button type="button" class="btn secondary" data-counter="white" data-dir="1">+</button></div></div>
+      </div>
+      <div style="height:12px"></div><div class="notice" id="balanceNotice"></div>
+      <div style="height:12px"></div><button type="button" class="btn ghost small" id="resetWordsBtn">Réinitialiser l’historique des mots</button>
+    </div>
+    <div class="card"><h2>Prénoms</h2><p>Ils restent enregistrés uniquement sur ce téléphone.</p><div class="names" id="namesList"></div></div>
+    <div class="actions"><button type="button" class="btn ghost" id="backHomeBtn">Retour</button><button type="button" class="btn green" id="startGameBtn">Distribuer les rôles</button></div>
+    <div class="startError hidden" id="startError" role="alert" aria-live="assertive"></div>
+  </section>
+
+  <section id="passScreen" class="hidden"><div class="card center"><div class="passIcon">📱</div><div class="eyebrow">Passe le téléphone à</div><div class="playerName" id="passPlayerName"></div><p class="bigHint">Personne d’autre ne doit voir l’écran.</p><div class="progress"><div id="revealProgress"></div></div><button type="button" class="btn" id="revealBtn">Voir mon information</button></div></section>
+
+  <section id="secretScreen" class="hidden"><div class="card"><div class="secretCard"><div class="secretBadge" id="secretRole">TON MOT</div><div class="secretWord" id="secretWord"></div><div class="secretTip" id="secretTip"></div></div><div style="height:13px"></div><button type="button" class="btn secondary" id="hideAndPassBtn">Cacher et passer</button></div></section>
+
+  <section id="playScreen" class="hidden">
+    <div class="card center"><div class="eyebrow">Le premier indice vient de</div><div class="startBrick" id="startPlayerName"></div><p>Faites un tour de table, débattez, puis votez.</p></div>
+    <div class="card forgotPanel center"><div class="forgotIcon">🧠</div><h2>Un trou de mémoire ?</h2><p>Le joueur concerné peut revoir secrètement son mot sans afficher son rôle.</p><button type="button" class="btn secondary" id="forgotWordBtn">J’ai oublié mon mot</button></div>
+    <div class="card"><h2>Vote d’élimination</h2><div class="statusRow"><div class="statusChip" id="aliveStatus"></div><div class="statusChip" id="roundStatus"></div></div><div class="playerGrid" id="voteGrid"></div><div style="height:15px"></div><button type="button" class="btn danger" id="eliminateBtn" disabled>Éliminer le joueur sélectionné</button></div>
+  </section>
+
+  <section id="recallSelectScreen" class="hidden">
+    <div class="card">
+      <div class="forgotIcon">🧠</div>
+      <h2 class="center">Qui a oublié son mot ?</h2>
+      <p class="center">Choisissez uniquement votre propre prénom. Les joueurs éliminés ne peuvent plus consulter leur information.</p>
+      <div class="recallGrid" id="recallPlayerGrid"></div>
+      <div style="height:15px"></div>
+      <button type="button" class="btn ghost" id="cancelRecallBtn">Annuler et revenir au vote</button>
+    </div>
+  </section>
+
+  <section id="recallPassScreen" class="hidden">
+    <div class="card center">
+      <div class="passIcon">🔒</div>
+      <div class="eyebrow">Passe le téléphone à</div>
+      <div class="playerName" id="recallPlayerName"></div>
+      <p class="bigHint">Les autres joueurs détournent les yeux.</p>
+      <button type="button" class="btn" id="openRecallBtn">Je suis cette personne</button>
+      <div style="height:11px"></div>
+      <button type="button" class="btn ghost" id="backRecallSelectBtn">Changer de joueur</button>
+    </div>
+  </section>
+
+  <section id="recallSecretScreen" class="hidden">
+    <div class="card">
+      <div class="holdZone" id="recallHoldZone">
+        <div class="secretBadge" id="recallBadge">RAPPEL SECRET</div>
+        <div class="holdPrompt" id="recallPrompt">Maintiens le bouton pour afficher</div>
+        <div class="holdWord hidden" id="recallWord"></div>
+        <div class="secretTip" id="recallTip">Le mot disparaît dès que tu relâches.</div>
+      </div>
+      <div style="height:13px"></div>
+      <button type="button" class="btn holdBtn" id="holdRecallBtn">Maintenir pour voir mon mot</button>
+      <div class="privacyNote center">Pour un Civil ou un Undercover, seul le mot est affiché. Mr White revoit uniquement son absence de mot.</div>
+      <div style="height:12px"></div>
+      <button type="button" class="btn secondary" id="finishRecallBtn">J’ai mémorisé — retour au vote</button>
+    </div>
+  </section>
+
+  <section id="eliminationScreen" class="hidden"><div class="card center"><div class="eyebrow">Joueur éliminé</div><div class="playerName" id="eliminatedName"></div><div class="revealRole" id="eliminatedRole"></div><div class="secretReminder" id="eliminatedInfo">Son mot reste secret jusqu’à la fin.</div><div id="whiteGuessBox" class="hidden"><div class="divider"></div><h3>Dernière chance de Mr White</h3><p>Il peut proposer exactement le mot des Civils.</p><input id="whiteGuessInput" autocomplete="off" placeholder="Sa proposition…"><div style="height:11px"></div><button type="button" class="btn warning" id="checkWhiteGuessBtn">Vérifier la réponse</button></div><div style="height:14px"></div><button type="button" class="btn" id="continueBtn">Continuer la partie</button></div></section>
+
+  <section id="endScreen" class="hidden"><div class="card center"><div class="winnerCrown">🏆</div><div class="eyebrow">Partie terminée</div><div class="winnerTitle" id="winnerTitle"></div><p id="winnerText"></p><div class="wordReveal" id="finalWords"></div></div><div class="actions"><button type="button" class="btn green" id="samePlayersBtn">Rejouer avec le même groupe</button><button type="button" class="btn ghost" id="resetBtn">Modifier la configuration</button></div></section>
+
+  <div class="footer">Version 6 · <span id="platformLabel">Web</span> · Jeu local et hors ligne · aucun nom n’est transmis</div>
+</div>
+<script src="words.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
