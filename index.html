@@ -57,11 +57,7 @@
       <div class="seatingIcon">🔄</div>
       <h2>Ordre autour de la table</h2>
       <p>Le téléphone va faire le tour de la table. Chaque personne saisit son propre prénom puis le passe à son voisin, toujours dans le même sens.</p>
-      <div class="savedOrderBox hidden" id="savedOrderBox">
-        <div class="eyebrow">Ordre mémorisé sur ce téléphone</div>
-        <div class="orderPreview" id="savedOrderPreview"></div>
-        <button type="button" class="btn secondary" id="useSavedOrderBtn">Rejouer avec cet ordre</button>
-      </div>
+      <div class="privacyNote">Les prénoms ne sont pas enregistrés sur le téléphone. Ils restent uniquement en mémoire pendant la partie en cours.</div>
     </div>
     <div class="actions"><button type="button" class="btn ghost" id="backHomeBtn">Retour</button><button type="button" class="btn green" id="startNameEntryBtn">Faire le tour des prénoms</button></div>
     <div class="startError hidden" id="startError" role="alert" aria-live="assertive"></div>
@@ -74,7 +70,7 @@
       <div class="playerName" id="nameEntryTitle">Quel est ton prénom ?</div>
       <p id="nameEntryInstruction">Tu es la première personne de la ronde. Entre ton prénom.</p>
       <div class="progress"><div id="nameEntryProgress"></div></div>
-      <input id="singleNameInput" class="nameEntryInput" maxlength="24" autocomplete="given-name" autocapitalize="words" enterkeyhint="next" placeholder="Ton prénom">
+      <input id="singleNameInput" class="nameEntryInput" maxlength="24" autocomplete="off" autocapitalize="words" enterkeyhint="next" placeholder="Ton prénom">
       <div class="fieldError hidden" id="nameEntryError" role="alert">Entre un prénom avant de continuer.</div>
       <div style="height:13px"></div>
       <button type="button" class="btn green" id="saveNameAndPassBtn">Valider et passer à mon voisin</button>
@@ -86,9 +82,9 @@
   <section id="orderReviewScreen" class="hidden">
     <div class="card center">
       <div class="seatingIcon">✅</div>
-      <div class="eyebrow">Tour de table enregistré</div>
+      <div class="eyebrow">Tour de table prêt</div>
       <div class="playerName">Ordre des joueurs</div>
-      <p>La distribution suivra exactement cet ordre. Après avoir vu son mot, chacun passera donc naturellement le téléphone à son voisin.</p>
+      <p>La distribution suivra exactement cet ordre. Après avoir vu son mot, chacun passera naturellement le téléphone à son voisin.</p>
       <div class="orderList" id="orderReviewList"></div>
       <div style="height:14px"></div>
       <button type="button" class="btn green" id="confirmOrderBtn">Distribuer les rôles</button>
@@ -107,50 +103,33 @@
     <div class="card"><h2>Vote d’élimination</h2><div class="statusRow"><div class="statusChip" id="aliveStatus"></div><div class="statusChip" id="roundStatus"></div></div><div class="playerGrid" id="voteGrid"></div><div style="height:15px"></div><button type="button" class="btn danger" id="eliminateBtn" disabled>Éliminer le joueur sélectionné</button></div>
   </section>
 
-  <section id="recallSelectScreen" class="hidden">
-    <div class="card">
-      <div class="forgotIcon">🧠</div>
-      <h2 class="center">Qui a oublié son mot ?</h2>
-      <p class="center">Choisissez uniquement votre propre prénom. Les joueurs éliminés ne peuvent plus consulter leur information.</p>
-      <div class="recallGrid" id="recallPlayerGrid"></div>
-      <div style="height:15px"></div>
-      <button type="button" class="btn ghost" id="cancelRecallBtn">Annuler et revenir au vote</button>
-    </div>
-  </section>
+  <section id="recallSelectScreen" class="hidden"><div class="card"><div class="forgotIcon">🧠</div><h2 class="center">Qui a oublié son mot ?</h2><p class="center">Choisissez uniquement votre propre prénom. Les joueurs éliminés ne peuvent plus consulter leur information.</p><div class="recallGrid" id="recallPlayerGrid"></div><div style="height:15px"></div><button type="button" class="btn ghost" id="cancelRecallBtn">Annuler et revenir au vote</button></div></section>
 
-  <section id="recallPassScreen" class="hidden">
-    <div class="card center">
-      <div class="passIcon">🔒</div>
-      <div class="eyebrow">Passe le téléphone à</div>
-      <div class="playerName" id="recallPlayerName"></div>
-      <p class="bigHint">Les autres joueurs détournent les yeux.</p>
-      <button type="button" class="btn" id="openRecallBtn">Je suis cette personne</button>
-      <div style="height:11px"></div>
-      <button type="button" class="btn ghost" id="backRecallSelectBtn">Changer de joueur</button>
-    </div>
-  </section>
+  <section id="recallPassScreen" class="hidden"><div class="card center"><div class="passIcon">🔒</div><div class="eyebrow">Passe le téléphone à</div><div class="playerName" id="recallPlayerName"></div><p class="bigHint">Les autres joueurs détournent les yeux.</p><button type="button" class="btn" id="openRecallBtn">Je suis cette personne</button><div style="height:11px"></div><button type="button" class="btn ghost" id="backRecallSelectBtn">Changer de joueur</button></div></section>
 
-  <section id="recallSecretScreen" class="hidden">
-    <div class="card">
-      <div class="holdZone" id="recallHoldZone">
-        <div class="secretBadge" id="recallBadge">RAPPEL SECRET</div>
-        <div class="holdPrompt" id="recallPrompt">Maintiens le bouton pour afficher</div>
-        <div class="holdWord hidden" id="recallWord"></div>
-        <div class="secretTip" id="recallTip">Le mot disparaît dès que tu relâches.</div>
-      </div>
-      <div style="height:13px"></div>
-      <button type="button" class="btn holdBtn" id="holdRecallBtn">Maintenir pour voir mon mot</button>
-      <div class="privacyNote center">Pour un Civil ou un Undercover, seul le mot est affiché. Mr White revoit uniquement son absence de mot.</div>
-      <div style="height:12px"></div>
-      <button type="button" class="btn secondary" id="finishRecallBtn">J’ai mémorisé — retour au vote</button>
-    </div>
-  </section>
+  <section id="recallSecretScreen" class="hidden"><div class="card"><div class="holdZone" id="recallHoldZone"><div class="secretBadge" id="recallBadge">RAPPEL SECRET</div><div class="holdPrompt" id="recallPrompt">Maintiens le bouton pour afficher</div><div class="holdWord hidden" id="recallWord"></div><div class="secretTip" id="recallTip">Le mot disparaît dès que tu relâches.</div></div><div style="height:13px"></div><button type="button" class="btn holdBtn" id="holdRecallBtn">Maintenir pour voir mon mot</button><div class="privacyNote center">Pour un Civil ou un Undercover, seul le mot est affiché. Mr White revoit uniquement son absence de mot.</div><div style="height:12px"></div><button type="button" class="btn secondary" id="finishRecallBtn">J’ai mémorisé — retour au vote</button></div></section>
 
   <section id="eliminationScreen" class="hidden"><div class="card center"><div class="eyebrow">Joueur éliminé</div><div class="playerName" id="eliminatedName"></div><div class="revealRole" id="eliminatedRole"></div><div class="secretReminder" id="eliminatedInfo">Son mot reste secret jusqu’à la fin.</div><div id="whiteGuessBox" class="hidden"><div class="divider"></div><h3>Dernière chance de Mr White</h3><p>Il peut proposer exactement le mot des Civils.</p><input id="whiteGuessInput" autocomplete="off" placeholder="Sa proposition…"><div style="height:11px"></div><button type="button" class="btn warning" id="checkWhiteGuessBtn">Vérifier la réponse</button></div><div style="height:14px"></div><button type="button" class="btn" id="continueBtn">Continuer la partie</button></div></section>
 
-  <section id="endScreen" class="hidden"><div class="card center"><div class="winnerCrown">🏆</div><div class="eyebrow">Partie terminée</div><div class="winnerTitle" id="winnerTitle"></div><p id="winnerText"></p><div class="wordReveal" id="finalWords"></div></div><div class="actions"><button type="button" class="btn green" id="samePlayersBtn">Rejouer avec le même groupe</button><button type="button" class="btn ghost" id="resetBtn">Modifier la configuration</button></div></section>
+  <section id="endScreen" class="hidden"><div class="card center"><div class="winnerCrown">🏆</div><div class="eyebrow">Partie terminée</div><div class="winnerTitle" id="winnerTitle"></div><p id="winnerText"></p><div class="wordReveal" id="finalWords"></div></div><div class="actions"><button type="button" class="btn green" id="samePlayersBtn">Continuer avec ce groupe</button><button type="button" class="btn ghost" id="resetBtn">Créer une nouvelle partie</button></div></section>
 
-  <div class="footer">Version 7 · <span id="platformLabel">Web</span> · Jeu local et hors ligne · aucun nom n’est transmis</div>
+  <section id="groupManageScreen" class="hidden">
+    <div class="card center">
+      <div class="seatingIcon">👥</div>
+      <div class="eyebrow">Continuer avec ce groupe</div>
+      <div class="playerName">Qui reste ?</div>
+      <p>Retire les personnes qui quittent la table. L’ordre des autres joueurs est conservé.</p>
+      <div class="groupManageList" id="groupManageList"></div>
+      <div class="notice" id="groupManageSummary"></div>
+      <div class="privacyNote" id="groupManageNotice"></div>
+      <div style="height:14px"></div>
+      <button type="button" class="btn green" id="startWithGroupBtn">Relancer avec les joueurs restants</button>
+      <div style="height:11px"></div>
+      <button type="button" class="btn ghost" id="backToResultsBtn">Retour aux résultats</button>
+    </div>
+  </section>
+
+  <div class="footer">Version 8 · <span id="platformLabel">Web</span> · Jeu local et hors ligne · aucun prénom enregistré</div>
 </div>
 <script src="words.js"></script>
 <script src="app.js"></script>
