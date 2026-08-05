@@ -14,6 +14,7 @@
 <title>Undercover Party</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="session.css">
 </head>
 <body>
 <div class="brick-field" aria-hidden="true"><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i></div>
@@ -27,6 +28,20 @@
       <p>Faites circuler un seul téléphone, donnez des indices et démasquez ceux qui n’ont pas exactement le même mot.</p>
       <button type="button" class="btn" id="newGameBtn">Lancer une partie</button>
     </div>
+
+    <div class="card resumeSessionCard hidden" id="resumeSessionCard">
+      <div class="resumeSessionIcon">💾</div>
+      <div class="resumeSessionContent">
+        <div class="eyebrow">Session retrouvée sur ce téléphone</div>
+        <h2>Reprendre la partie</h2>
+        <p id="resumeSessionMeta"></p>
+        <div class="resumeSessionActions">
+          <button type="button" class="btn green" id="resumeSessionBtn">Reprendre là où on en était</button>
+          <button type="button" class="btn ghost" id="discardSessionBtn">Abandonner cette session</button>
+        </div>
+      </div>
+    </div>
+
     <div class="card">
       <h2>Comment jouer</h2>
       <div class="rulesGrid">
@@ -57,7 +72,7 @@
       <div class="seatingIcon">🔄</div>
       <h2>Ordre autour de la table</h2>
       <p>Le téléphone va faire le tour de la table. Chaque personne saisit son propre prénom puis le passe à son voisin, toujours dans le même sens.</p>
-      <div class="privacyNote">Les prénoms ne sont pas enregistrés sur le téléphone. Ils restent uniquement en mémoire pendant la partie en cours.</div>
+      <div class="privacyNote">Les prénoms sont conservés uniquement dans la session active pour permettre une reprise après fermeture. Ils sont effacés lorsque vous créez une nouvelle partie ou abandonnez la session.</div>
     </div>
     <div class="actions"><button type="button" class="btn ghost" id="backHomeBtn">Retour</button><button type="button" class="btn green" id="startNameEntryBtn">Faire le tour des prénoms</button></div>
     <div class="startError hidden" id="startError" role="alert" aria-live="assertive"></div>
@@ -129,7 +144,7 @@
     </div>
   </section>
 
-  <div class="footer">Version 8 · <span id="platformLabel">Web</span> · Jeu local et hors ligne · aucun prénom enregistré</div>
+  <div class="footer">Version 9 · <span id="platformLabel">Web</span> · Session locale · aucun prénom transmis</div>
 </div>
 <script src="words.js"></script>
 <script src="app.js"></script>
