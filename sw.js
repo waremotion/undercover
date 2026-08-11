@@ -1,5 +1,5 @@
-const CACHE_NAME="sketchy-v10-1";
-const ASSETS=["./","./index.html","./styles.css","./session.css","./words.js","./app.js","./branding.js","./manifest.webmanifest"];
+const CACHE_NAME="sketchy-v11-1";
+const ASSETS=["./","./index.html","./styles.css","./session.css","./i18n.css","./i18n-fr.js","./i18n-en.js","./i18n.js","./words.js","./words-en.js","./words-en-food.js","./words-en-objects.js","./words-en-places.js","./words-en-nature.js","./words-en-culture.js","./words-en-daily.js","./game-core.js","./game-flow.js","./game-runtime.js","./app.js","./manifest.webmanifest"];
 self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(ASSETS)));self.skipWaiting()});
 self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE_NAME).map(key=>caches.delete(key)))));self.clients.claim()});
 self.addEventListener("fetch",event=>{if(event.request.method!=="GET")return;event.respondWith(fetch(event.request).then(response=>{const copy=response.clone();caches.open(CACHE_NAME).then(cache=>cache.put(event.request,copy));return response}).catch(()=>caches.match(event.request).then(cached=>cached||caches.match("./index.html"))))});
