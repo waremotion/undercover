@@ -1,7 +1,7 @@
 {
-  "name": "Undercover Party",
-  "short_name": "Undercover",
-  "description": "Jeu Undercover mobile pour soirées entre amis.",
+  "name": "Sketchy!",
+  "short_name": "Sketchy!",
+  "description": "Sketchy! — jeu mobile de déduction sociale pour soirées entre amis.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
