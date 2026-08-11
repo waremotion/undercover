@@ -1,8 +1,8 @@
 # Sketchy!
 
-**Sketchy!** est un jeu mobile de déduction sociale pour soirées entre amis. Le principe est simple : la majorité des joueurs reçoit le même mot, les Undercover reçoivent un mot proche, et Mr White ne reçoit aucun mot.
+**Sketchy!** est un jeu mobile de déduction sociale à jouer autour d’une table avec **un seul téléphone**.
 
-Le jeu se joue avec **un seul téléphone qui circule autour de la table**.
+La majorité des joueurs reçoit le même mot, les Undercover reçoivent un mot proche, et Mr White ne reçoit aucun mot. Les joueurs donnent des indices, débattent puis éliminent les suspects.
 
 ## Jouer
 
@@ -10,237 +10,220 @@ Version web :
 
 **https://waremotion.github.io/undercover/**
 
-Le nom du dépôt reste actuellement `undercover`, mais le jeu et l’application web portent désormais le nom **Sketchy!**.
+Le dépôt GitHub conserve pour l’instant le nom historique `undercover`, mais le jeu s’appelle **Sketchy!**.
+
+## Langues
+
+Sketchy! est disponible en :
+
+- **Français**
+- **English**
+
+Un sélecteur `FR / EN` discret est affiché dans la barre supérieure.
+
+Le changement de langue est **instantané** : aucun rechargement de page n’est nécessaire. Les textes statiques et les éléments dynamiques de l’interface sont réaffichés immédiatement dans la langue choisie.
+
+La langue sélectionnée est mémorisée localement sur l’appareil.
+
+### Architecture multilingue
+
+Le multilingue est volontairement séparé du moteur de jeu afin de rester facile à maintenir :
+
+```text
+i18n-fr.js             # dictionnaire français
+i18n-en.js             # dictionnaire anglais
+i18n.js                # moteur de traduction
+i18n.css               # style du sélecteur de langue
+words.js               # 556 couples français
+words-en.js            # initialisation de la banque anglaise
+words-en-*.js          # couples anglais séparés par catégorie
+game-core.js           # stockage, sessions et banques de mots
+game-flow.js           # déroulement des parties et vues dynamiques
+game-runtime.js        # reprise de session et rafraîchissement i18n
+app.js                 # branchement des événements
+```
+
+Les éléments HTML utilisent des clés `data-i18n`, par exemple :
+
+```html
+<button data-i18n="home.start">Lancer une partie</button>
+```
+
+Les textes générés par JavaScript utilisent :
+
+```js
+t("home.start")
+```
+
+Pour ajouter ou modifier un libellé, il suffit donc de modifier la clé correspondante dans les dictionnaires `i18n-fr.js` et `i18n-en.js`.
+
+## Couples de mots
+
+Chaque langue possède sa propre banque de **556 couples**.
+
+Les couples anglais ne reposent pas sur une traduction automatique au moment de jouer. Ils sont stockés localement par catégorie dans les fichiers `words-en-*.js` et ont été conçus pour fonctionner naturellement en anglais : les deux mots d’un couple restent suffisamment proches pour créer le doute, mais suffisamment différents pour permettre aux joueurs de se distinguer par leurs indices.
+
+Exemples :
+
+```text
+FR : Chat / Tigre
+EN : Cat / Tiger
+
+FR : Plage / Piscine
+EN : Beach / Swimming pool
+
+EN : Pizza / Calzone
+EN : Headphones / Earbuds
+EN : Forest / Jungle
+```
+
+L’historique anti-répétition est séparé par langue. Une soirée jouée en français n’épuise donc pas les couples disponibles en anglais.
+
+### Langue d’une partie en cours
+
+La langue des **mots** est fixée au moment où une nouvelle partie démarre. Cela évite de changer les mots secrètement au milieu d’une manche.
+
+L’interface, elle, peut être basculée entre français et anglais à tout moment. La partie suivante utilisera la langue actuellement sélectionnée.
 
 ## Fonctionnalités principales
 
 - 4 à 20 joueurs.
-- 556 couples de mots.
-- Plusieurs catégories de mots.
+- 556 couples français.
+- 556 couples anglais.
+- Catégories : cuisine/food, objets/objects, lieux/places, nature, culture et vie quotidienne/everyday life.
 - Civils, Undercover et Mr White.
-- Distribution des rôles dans l’ordre physique autour de la table.
-- Saisie des prénoms en faisant passer le téléphone de voisin en voisin.
+- Distribution dans l’ordre physique autour de la table.
+- Saisie des prénoms en faisant circuler le téléphone.
 - Mr White ne commence jamais une manche.
-- Vote et élimination directement dans l’application.
+- Vote et élimination dans l’application.
 - Le rôle du joueur éliminé est révélé, mais pas son mot.
 - Dernière chance de Mr White pour deviner le mot des Civils.
-- Fonction « J’ai oublié mon mot » avec affichage secret pendant l’appui.
-- Possibilité de continuer avec le même groupe et de retirer les joueurs qui quittent la table.
-- Historique local des couples déjà joués afin de limiter les répétitions.
-- Session persistante locale pour reprendre une partie après fermeture ou rechargement.
+- Fonction « J’ai oublié mon mot » / “I forgot my word”.
+- Possibilité de continuer avec le même groupe et de retirer des joueurs.
+- Historique local des couples déjà joués.
+- Session persistante locale pour reprendre après une fermeture ou un rechargement.
 - Mode hors ligne après une première ouverture complète.
+- Interface bilingue sans rechargement.
 
-## Rôles
-
-### Civils
-
-Tous les Civils reçoivent le même mot. Leur objectif est d’identifier et d’éliminer tous les intrus.
-
-Ils voient uniquement leur mot et ne voient pas explicitement le rôle « Civil » pendant la distribution.
-
-### Undercover
-
-Les Undercover reçoivent tous un second mot, proche de celui des Civils. Ils doivent se fondre dans le groupe et éviter l’élimination.
-
-Ils voient uniquement leur mot et ne connaissent pas directement l’identité des autres Undercover.
-
-### Mr White
-
-Mr White ne reçoit aucun mot. Il doit improviser à partir des indices donnés par les autres joueurs.
-
-S’il est éliminé, il peut tenter de deviner exactement le mot des Civils pour remporter la partie.
-
-Mr White n’est jamais choisi comme premier joueur pour donner un indice.
-
-## Déroulement d’une partie
-
-### 1. Configuration
-
-Choisissez :
-
-- le nombre de joueurs ;
-- le nombre d’Undercover ;
-- le nombre de Mr White ;
-- la catégorie de mots.
-
-Le jeu conserve toujours au moins trois Civils dans les configurations autorisées.
-
-### 2. Ordre autour de la table
-
-Le premier joueur saisit son prénom puis passe le téléphone à son voisin. Chaque joueur fait la même chose, toujours dans le même sens.
-
-Cet ordre devient l’ordre physique de la table. La distribution des rôles suit exactement cette séquence, ce qui permet à chacun de simplement passer le téléphone à son voisin après avoir vu son information.
-
-### 3. Distribution secrète
-
-Chaque joueur :
-
-1. attend que son prénom apparaisse ;
-2. vérifie que personne ne regarde ;
-3. consulte son mot ou son statut Mr White ;
-4. mémorise l’information ;
-5. cache l’écran ;
-6. passe le téléphone à son voisin.
-
-### 4. Indices
-
-Une fois la distribution terminée, Sketchy! choisit un premier joueur parmi les Civils et Undercover encore en jeu.
-
-**Mr White est toujours exclu de ce tirage.**
-
-Chaque joueur donne ensuite un indice court sans prononcer directement son mot.
-
-### 5. Vote et élimination
-
-Le groupe discute puis choisit un joueur à éliminer.
-
-L’application révèle uniquement son rôle :
-
-- Civil ;
-- Undercover ;
-- Mr White.
-
-Son mot reste secret jusqu’à la fin de la partie.
-
-### 6. Mr White
-
-Lorsqu’un Mr White est éliminé, il peut proposer le mot exact des Civils.
-
-S’il trouve le bon mot, il gagne immédiatement.
-
-## Conditions de victoire
+## Règles
 
 ### Civils
 
-Les Civils gagnent lorsque tous les Undercover et tous les Mr White sont éliminés.
+Tous les Civils reçoivent le même mot. Ils doivent identifier les intrus.
 
 ### Undercover
 
-Les Undercover gagnent lorsqu’ils deviennent au moins aussi nombreux que tous leurs adversaires encore en vie.
+Tous les Undercover reçoivent le même second mot, proche du mot des Civils. Ils ne savent pas qui sont les autres Undercover.
 
 ### Mr White
 
-Mr White gagne s’il trouve le mot des Civils après son élimination ou s’il atteint une situation de contrôle final prévue par les règles du jeu.
+Mr White ne reçoit aucun mot. Il doit déduire le thème grâce aux indices des autres joueurs.
 
-## Continuer avec le groupe
+S’il est éliminé, il peut tenter de deviner exactement le mot des Civils.
 
-À la fin d’une partie, le bouton **« Continuer avec ce groupe »** permet de préparer immédiatement la suivante.
+## Déroulement
 
-Avant de relancer :
-
-- les joueurs encore présents sont affichés dans leur ordre autour de la table ;
-- un joueur peut être retiré ;
-- un joueur retiré par erreur peut être rajouté ;
-- il faut conserver au moins quatre joueurs ;
-- la composition des rôles est automatiquement ajustée si nécessaire.
-
-Une nouvelle distribution complète des rôles et un nouveau couple de mots sont ensuite générés.
+1. Choisir le nombre de joueurs, d’Undercover et de Mr White.
+2. Choisir une catégorie.
+3. Faire circuler le téléphone dans l’ordre autour de la table pour saisir les prénoms.
+4. Faire circuler à nouveau le téléphone pour révéler secrètement les mots.
+5. Sketchy! désigne un premier joueur qui **ne peut jamais être Mr White**.
+6. Chacun donne un indice.
+7. Le groupe vote pour éliminer un suspect.
+8. Recommencer jusqu’à la victoire d’une équipe.
 
 ## Session persistante
 
-Sketchy! sauvegarde automatiquement la **session active** dans le stockage local du téléphone.
+Une partie démarrée est sauvegardée automatiquement dans le stockage local du navigateur.
 
-La sauvegarde contient notamment :
+La session contient notamment :
 
-- les joueurs et leur ordre ;
+- l’ordre et les prénoms des joueurs ;
 - les rôles ;
-- le couple de mots courant ;
+- les mots de la partie ;
 - les joueurs éliminés ;
 - le numéro du vote ;
+- le premier joueur de la manche ;
 - l’avancement de la distribution ;
-- le joueur qui commence la manche ;
-- l’état de la gestion du groupe.
+- la langue des mots de la partie.
 
-Si l’onglet, Safari, Chrome ou l’application web est fermé, l’écran d’accueil propose **« Reprendre la partie »**.
+Si Safari, Chrome ou l’application web est fermé, l’écran d’accueil propose **Reprendre la partie / Resume game**.
 
-Pour éviter une révélation accidentelle, une reprise effectuée pendant un écran secret revient sur un écran sécurisé plutôt que de réafficher directement le mot.
+Les prénoms ne constituent pas un carnet permanent : ils sont supprimés lorsque l’utilisateur crée une nouvelle partie ou abandonne la session.
 
-La session active est supprimée lorsqu’on choisit volontairement de créer une nouvelle partie ou d’abandonner la session.
+## Confidentialité
 
-## Données et confidentialité
+Aucun prénom, rôle, mot ou historique de partie n’est envoyé vers un serveur applicatif.
 
-Sketchy! ne possède pas de compte utilisateur et ne transmet pas les prénoms à un serveur applicatif.
-
-Les données de partie sont stockées uniquement dans le navigateur du téléphone utilisé pour lancer la partie.
-
-L’historique des couples déjà joués est lui aussi local à l’appareil et au navigateur.
-
-Il peut être perdu si l’utilisateur efface les données du site, utilise une navigation privée, change de navigateur ou réinitialise son appareil.
-
-## Anti-répétition des mots
-
-Sketchy! contient 556 couples de mots.
-
-À chaque partie, un couple inédit est choisi parmi ceux encore disponibles dans la catégorie sélectionnée. Une fois tous les couples utilisés, un nouveau cycle peut recommencer.
-
-Le bouton **« Réinitialiser l’historique des mots »** permet de recommencer manuellement le cycle.
+GitHub Pages ne sert que les fichiers statiques du jeu. Les données de partie restent dans le navigateur de l’appareil.
 
 ## Compatibilité
 
-### iPhone et iPad
+### iPhone / iPad
 
-Sketchy! est conçu pour fonctionner dans les versions récentes de Safari sur iOS et iPadOS.
+Prévu pour les versions récentes de Safari iOS et iPadOS, avec gestion :
 
-L’interface prend en compte :
-
-- les zones de sécurité de l’écran ;
-- l’encoche et la Dynamic Island ;
-- la barre d’accueil ;
-- les événements tactiles ;
-- le clavier virtuel ;
-- le portrait et le paysage.
-
-Pour l’ajouter comme application :
-
-1. ouvrir le site dans Safari ;
-2. toucher **Partager** ;
-3. choisir **Sur l’écran d’accueil** ;
-4. valider.
+- des safe areas ;
+- de la Dynamic Island / encoche ;
+- du tactile ;
+- du clavier virtuel ;
+- du mode portrait et paysage ;
+- de l’installation sur l’écran d’accueil.
 
 ### Android
 
-Sketchy! est conçu pour les navigateurs Android modernes, notamment Chrome et Samsung Internet.
-
-Dans Chrome, utilisez **Installer l’application** ou **Ajouter à l’écran d’accueil** lorsque l’option est proposée.
+Prévu pour Chrome, Samsung Internet et les navigateurs Android modernes.
 
 ### Ordinateur
 
-Le jeu fonctionne également dans les navigateurs modernes sur ordinateur, même si l’expérience est prioritairement pensée pour un téléphone partagé autour d’une table.
+Fonctionne également avec les navigateurs modernes, même si l’ergonomie est conçue en priorité pour un téléphone qui circule autour de la table.
 
-## WhatsApp et partage
+## WhatsApp
 
-Partagez le lien web :
-
-**https://waremotion.github.io/undercover/**
-
-Il vaut mieux éviter d’envoyer directement le fichier HTML comme pièce jointe. Certains aperçus intégrés, notamment sur iOS, peuvent afficher la page sans exécuter correctement toute la logique JavaScript.
-
-## Mode hors ligne
-
-La première ouverture nécessite une connexion Internet pour récupérer les fichiers de Sketchy!.
-
-Un service worker met ensuite les ressources principales en cache. Le jeu peut alors fonctionner hors ligne tant que le navigateur conserve ces données.
-
-## Mises à jour
-
-Le jeu est publié depuis la branche `main` avec GitHub Pages.
-
-Les nouvelles versions conservent la même adresse publique :
+Partager l’URL GitHub Pages :
 
 **https://waremotion.github.io/undercover/**
 
-Le cache du service worker est versionné afin que les téléphones récupèrent les nouvelles ressources après une mise à jour.
+Il est déconseillé d’envoyer directement un fichier `.html`, notamment sur iOS où l’aperçu de pièce jointe peut empêcher certains scripts de fonctionner.
 
-## Structure du projet
+## Hors ligne
+
+Lors de la première ouverture, une connexion est nécessaire.
+
+Le service worker met ensuite en cache :
+
+- l’interface ;
+- les styles ;
+- le moteur du jeu ;
+- le moteur i18n ;
+- les banques de mots française et anglaise ;
+- le manifeste PWA.
+
+La version actuelle du cache est `sketchy-v11-1`.
+
+## Structure
 
 ```text
 undercover/
 ├── index.html
 ├── styles.css
 ├── session.css
-├── app.js
-├── branding.js
+├── i18n.css
+├── i18n-fr.js
+├── i18n-en.js
+├── i18n.js
 ├── words.js
+├── words-en.js
+├── words-en-food.js
+├── words-en-objects.js
+├── words-en-places.js
+├── words-en-nature.js
+├── words-en-culture.js
+├── words-en-daily.js
+├── game-core.js
+├── game-flow.js
+├── game-runtime.js
+├── app.js
 ├── manifest.webmanifest
 ├── sw.js
 └── README.md
@@ -248,9 +231,7 @@ undercover/
 
 ## Développement local
 
-Aucun framework ni processus de compilation n’est requis.
-
-Un petit serveur HTTP est recommandé pour tester correctement le service worker :
+Aucun framework ni compilation n’est nécessaire.
 
 ```bash
 python3 -m http.server 8080
@@ -262,8 +243,10 @@ Puis ouvrir :
 http://localhost:8080
 ```
 
-## Hébergement
+## Déploiement
 
-Le projet est un site statique compatible GitHub Pages : HTML, CSS et JavaScript uniquement.
+GitHub Pages publie la branche `main`.
 
-Le dépôt public actuel est `waremotion/undercover` et l’application publiée s’appelle **Sketchy!**.
+Les mises à jour gardent la même URL :
+
+**https://waremotion.github.io/undercover/**
