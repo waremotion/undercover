@@ -6,10 +6,30 @@ function normalizeRestoredScreen(screenId) {
   return screens.includes(screenId) ? screenId : null;
 }
 
+function isLanguageLocked() {
+  return Boolean(game);
+}
+
+function syncLanguageLockUI() {
+  const switcher = document.querySelector(".languageSwitch");
+  if (!switcher) return;
+  const locked = isLanguageLocked();
+  switcher.classList.toggle("locked", locked);
+  switcher.setAttribute("aria-disabled", locked ? "true" : "false");
+  document.querySelectorAll("[data-lang]").forEach(button => {
+    const active = button.dataset.lang === currentLanguage();
+    button.disabled = locked;
+    button.setAttribute("aria-disabled", locked ? "true" : "false");
+    if (locked && !active) button.setAttribute("tabindex", "-1");
+    else button.removeAttribute("tabindex");
+  });
+}
+
 function restoreSession() {
   const session = getStoredSession();
   if (!session) {
     updateResumeCard();
+    syncLanguageLockUI();
     return;
   }
 
@@ -21,6 +41,7 @@ function restoreSession() {
       currentStarterId: session.game.currentStarterId ?? session.game.lastStarterId ?? null,
       whiteGuessResolved: Boolean(session.game.whiteGuessResolved)
     };
+    SketchyI18n.setLanguage(game.language, { persist: false, notify: false });
     settings = {
       players: game.players.length,
       under: Number(session.settings?.under) || game.players.filter(player => player.role === "under").length,
@@ -50,8 +71,10 @@ function restoreSession() {
     }
   } finally {
     restoringSession = false;
+    refreshLocalizedUI();
     saveSession();
     updateResumeCard();
+    syncLanguageLockUI();
   }
 }
 
@@ -77,6 +100,7 @@ function refreshLocalizedUI() {
   updateSettingsUI();
   updateResumeCard();
   updateFooterAndTitle();
+  syncLanguageLockUI();
 
   if (currentScreenId === "nameEntryScreen") {
     renderNameEntryStep({ focus: false });
@@ -109,6 +133,7 @@ function bindReliableTap(element, handler) {
   let running = false;
 
   const invoke = event => {
+    if (element.disabled) return;
     if (event && event.type === "touchend") {
       lastTouch = Date.now();
       if (event.cancelable) event.preventDefault();
@@ -132,6 +157,7 @@ function bindReliableTap(element, handler) {
   element.addEventListener("touchend", invoke, { passive: false });
   element.addEventListener("click", invoke);
   element.addEventListener("keydown", event => {
+    if (element.disabled) return;
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       invoke(event);
