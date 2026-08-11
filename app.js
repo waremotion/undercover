@@ -4,10 +4,18 @@ SketchyI18n.init();
 migrateLegacyStorage();
 
 document.querySelectorAll("[data-lang]").forEach(button => {
-  bindReliableTap(button, () => SketchyI18n.setLanguage(button.dataset.lang));
+  bindReliableTap(button, () => {
+    if (isLanguageLocked()) return;
+    SketchyI18n.setLanguage(button.dataset.lang);
+  });
 });
 
 SketchyI18n.onChange(() => {
+  if (isLanguageLocked() && game?.language && currentLanguage() !== game.language) {
+    SketchyI18n.setLanguage(game.language, { persist: false, notify: false });
+    refreshLocalizedUI();
+    return;
+  }
   refreshLocalizedUI();
   saveSession();
 });
@@ -32,6 +40,7 @@ bindClick("newGameBtn", () => {
   pendingNames = [];
   groupDraft = [];
   updateSettingsUI();
+  syncLanguageLockUI();
   showScreen("setupScreen");
 });
 bindClick("resumeSessionBtn", restoreSession);
@@ -41,6 +50,8 @@ bindClick("discardSessionBtn", () => {
   selectedPlayerId = null;
   recallPlayerId = null;
   groupDraft = [];
+  syncLanguageLockUI();
+  refreshLocalizedUI();
 });
 bindClick("backHomeBtn", () => showScreen("homeScreen"));
 
@@ -100,6 +111,7 @@ bindClick("resetBtn", () => {
   groupDraft = [];
   settings = { players: 13, under: 2, white: 1, category: "all" };
   updateSettingsUI();
+  syncLanguageLockUI();
   showScreen("setupScreen");
 });
 
@@ -117,4 +129,5 @@ addEventListener("blur", hideRecallWord);
 addEventListener("orientationchange", () => setTimeout(() => scrollTo(0, 0), 180));
 
 refreshLocalizedUI();
+syncLanguageLockUI();
 registerServiceWorker();
