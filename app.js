@@ -71,7 +71,10 @@ bindClick("resetWordsBtn", () => {
 
 bindReliableTap($("startNameEntryBtn"), beginNameEntry);
 bindReliableTap($("saveNameAndPassBtn"), saveCurrentName);
-bindReliableTap($("confirmOrderBtn"), () => safeStartGameWithNames([...pendingNames]));
+bindReliableTap($("confirmOrderBtn"), () => {
+  safeStartGameWithNames([...pendingNames]);
+  syncLanguageLockUI();
+});
 
 $("singleNameInput").addEventListener("keydown", event => {
   if (event.key === "Enter") {
