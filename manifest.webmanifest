@@ -1,11 +1,10 @@
 {
   "name": "Sketchy!",
   "short_name": "Sketchy!",
-  "description": "Sketchy! — jeu mobile de déduction sociale pour soirées entre amis.",
+  "description": "Sketchy! — FR/EN social deduction party game.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#17122d",
-  "theme_color": "#17122d",
-  "lang": "fr"
+  "theme_color": "#17122d"
 }
