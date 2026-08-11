@@ -9,9 +9,9 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Undercover">
-<meta name="description" content="Jeu Undercover mobile pour soirées entre amis. Fonctionne hors ligne après la première ouverture.">
-<title>Undercover Party</title>
+<meta name="apple-mobile-web-app-title" content="Sketchy!">
+<meta name="description" content="Sketchy! — jeu mobile de déduction sociale pour soirées entre amis. Fonctionne hors ligne après la première ouverture.">
+<title>Sketchy!</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="session.css">
@@ -19,7 +19,7 @@
 <body>
 <div class="brick-field" aria-hidden="true"><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i><i class="brick"></i></div>
 <div class="app">
-  <header class="topbar"><div class="logo"><div class="logoMark">🕵️</div>UNDER<span>COVER</span></div><div class="topPill">556 duos</div></header>
+  <header class="topbar"><div class="logo"><div class="logoMark">🕵️</div>SKETCHY<span>!</span></div><div class="topPill">556 duos</div></header>
 
   <section id="homeScreen">
     <div class="card hero">
@@ -32,7 +32,7 @@
     <div class="card resumeSessionCard hidden" id="resumeSessionCard">
       <div class="resumeSessionIcon">💾</div>
       <div class="resumeSessionContent">
-        <div class="eyebrow">Session retrouvée sur ce téléphone</div>
+        <div class="eyebrow">Session Sketchy! retrouvée sur ce téléphone</div>
         <h2>Reprendre la partie</h2>
         <p id="resumeSessionMeta"></p>
         <div class="resumeSessionActions">
@@ -72,7 +72,7 @@
       <div class="seatingIcon">🔄</div>
       <h2>Ordre autour de la table</h2>
       <p>Le téléphone va faire le tour de la table. Chaque personne saisit son propre prénom puis le passe à son voisin, toujours dans le même sens.</p>
-      <div class="privacyNote">Les prénoms sont conservés uniquement dans la session active pour permettre une reprise après fermeture. Ils sont effacés lorsque vous créez une nouvelle partie ou abandonnez la session.</div>
+      <div class="privacyNote">Les prénoms sont conservés uniquement dans la session active de Sketchy! pour permettre une reprise après fermeture. Ils sont effacés lorsque vous créez une nouvelle partie ou abandonnez la session.</div>
     </div>
     <div class="actions"><button type="button" class="btn ghost" id="backHomeBtn">Retour</button><button type="button" class="btn green" id="startNameEntryBtn">Faire le tour des prénoms</button></div>
     <div class="startError hidden" id="startError" role="alert" aria-live="assertive"></div>
@@ -126,7 +126,7 @@
 
   <section id="eliminationScreen" class="hidden"><div class="card center"><div class="eyebrow">Joueur éliminé</div><div class="playerName" id="eliminatedName"></div><div class="revealRole" id="eliminatedRole"></div><div class="secretReminder" id="eliminatedInfo">Son mot reste secret jusqu’à la fin.</div><div id="whiteGuessBox" class="hidden"><div class="divider"></div><h3>Dernière chance de Mr White</h3><p>Il peut proposer exactement le mot des Civils.</p><input id="whiteGuessInput" autocomplete="off" placeholder="Sa proposition…"><div style="height:11px"></div><button type="button" class="btn warning" id="checkWhiteGuessBtn">Vérifier la réponse</button></div><div style="height:14px"></div><button type="button" class="btn" id="continueBtn">Continuer la partie</button></div></section>
 
-  <section id="endScreen" class="hidden"><div class="card center"><div class="winnerCrown">🏆</div><div class="eyebrow">Partie terminée</div><div class="winnerTitle" id="winnerTitle"></div><p id="winnerText"></p><div class="wordReveal" id="finalWords"></div></div><div class="actions"><button type="button" class="btn green" id="samePlayersBtn">Continuer avec ce groupe</button><button type="button" class="btn ghost" id="resetBtn">Créer une nouvelle partie</button></div></section>
+  <section id="endScreen" class="hidden"><div class="card center"><div class="winnerCrown">🏆</div><div class="eyebrow">Partie Sketchy! terminée</div><div class="winnerTitle" id="winnerTitle"></div><p id="winnerText"></p><div class="wordReveal" id="finalWords"></div></div><div class="actions"><button type="button" class="btn green" id="samePlayersBtn">Continuer avec ce groupe</button><button type="button" class="btn ghost" id="resetBtn">Créer une nouvelle partie</button></div></section>
 
   <section id="groupManageScreen" class="hidden">
     <div class="card center">
@@ -144,7 +144,7 @@
     </div>
   </section>
 
-  <div class="footer">Version 9 · <span id="platformLabel">Web</span> · Session locale · aucun prénom transmis</div>
+  <div class="footer">Sketchy! · Version 10 · <span id="platformLabel">Web</span> · Session locale · aucun prénom transmis</div>
 </div>
 <script src="words.js"></script>
 <script src="app.js"></script>
